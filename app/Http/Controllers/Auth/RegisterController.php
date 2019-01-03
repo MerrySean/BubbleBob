@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +19,7 @@ class RegisterController extends Controller
     | validation and creation. By default this controller uses a trait to
     | provide this functionality without requiring any additional code.
     |
-    */
+     */
 
     use RegistersUsers;
 
@@ -49,7 +49,16 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'age' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
+            'user_type' => ['required', 'string', 'max:255'],
+            'user_status' => ['required', 'string', 'max:255'],
+            'secret_question' => ['required', 'string', 'max:255'],
+            'secret_answer' => ['required', 'string', 'max:255'],
+            'user_type' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
@@ -59,12 +68,23 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
+        $carbon = new \Carbon\Carbon;
+
         return User::create([
-            'name' => $data['name'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'date_of_birth' => $carbon->parse($data['date_of_birth']),
+            'age' => $data['age'],
+            'username' => $data['username'],
+            'user_type' => $data['user_type'],
+            'user_status' => 'active',
+            'secret_question' => $data['secret_question'],
+            'secret_answer' => $data['secret_answer'],
+            'address' => $data['address'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
