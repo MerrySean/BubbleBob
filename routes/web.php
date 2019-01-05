@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Middleware;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,20 +17,25 @@ Route::middleware('guest')->group(function () {
     Route::view('/', 'pages.welcome')->name('login');
 });
 
-// Route::view('/admin', 'pages.admin');
-
-// Route::namespace('Auth')->group(function () {
-//     Route::post('/login', 'LoginController@login');
-// });
-
-
-Route::middleware('auth')->group(function () {
-    Route::get('/admin', 'AdminController@view');
-});
-
-
-Route::view('/home', 'pages.home');
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(
+    [
+        'prefix' => 'admin',
+        'middleware' => ['admin']
+    ],
+    function () {
+        Route::view('/dashboard', 'pages.home')->name('admin.dashboard');
+    }
+);
+
+Route::group(
+    [
+        'prefix' => 'user',
+        'middleware' => ['user']
+    ],
+    function () {
+        Route::view('/dashboard', 'pages.home')->name('user.dashboard');
+    }
+);
