@@ -54,7 +54,6 @@ class RegisterController extends Controller
             'age' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255'],
             'user_type' => ['required', 'string', 'max:255'],
-            'user_status' => ['required', 'string', 'max:255'],
             'secret_question' => ['required', 'string', 'max:255'],
             'secret_answer' => ['required', 'string', 'max:255'],
             'user_type' => ['required', 'string', 'max:255'],
