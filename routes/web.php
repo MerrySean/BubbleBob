@@ -13,29 +13,29 @@ use GuzzleHttp\Middleware;
 |
  */
 
+Auth::routes();
+
+
 Route::middleware('guest')->group(function () {
     Route::view('/', 'pages.welcome')->name('login');
 });
 
-Auth::routes();
-
-
 Route::group(
     [
         'prefix' => 'admin',
-        'middleware' => ['admin']
+        'middleware' => ['auth', 'admin']
     ],
     function () {
-        Route::view('/dashboard', 'pages.home')->name('admin.dashboard');
+        Route::view('/dashboard', 'pages.admin.dashboard')->name('admin.dashboard');
     }
 );
 
 Route::group(
     [
         'prefix' => 'user',
-        'middleware' => ['user']
+        'middleware' => ['auth', 'user']
     ],
     function () {
-        Route::view('/dashboard', 'pages.home')->name('user.dashboard');
+        Route::view('/dashboard', 'pages.user.dashboard')->name('user.dashboard');
     }
 );
