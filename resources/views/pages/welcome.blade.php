@@ -13,13 +13,18 @@
                 @csrf
                 <label for="username" class="mr-3">Username : </label>
                 <input id="username"  class="form-control mr-sm-2" name="username" type="text" placeholder="Username" aria-label="Username">
-                @if ($errors->has('email'))
+                @if ($errors->has('username'))
                     <span class="invalid-feedback" role="alert">
-                        <strong>{{ $errors->first('email') }}</strong>
+                        <strong>{{ $errors->first('username') }}</strong>
                     </span>
                 @endif
                 <label for="password" class="ml-4 mr-3">Password : </label>
                 <input id="password"  class="form-control mr-sm-2" name="password" type="password" placeholder="Password" aria-label="Password">
+                @if ($errors->has('password'))
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $errors->first('password') }}</strong>
+                    </span>
+                @endif
                 <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
               </form>
             </div>
