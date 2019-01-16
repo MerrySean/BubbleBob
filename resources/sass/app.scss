@@ -1,14 +1,40 @@
 
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import 'materialize-css/sass/materialize.scss';
 
-// Variables
-@import 'variables';
+body{
+    display:flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+main {
+    flex: 1 0 auto;
+    position: relative;
+}
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+.background-image {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-image: url("/Resources/Background_img.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.text--white {
+    color: white;
+}
+
+.collection {
+    border: 1px solid #e0e0e000;
+}
+
+.collection .collection-item {
+    background-color:transparent;
+}
+
+.sidenav.sidenav-fixed {
+    position: absolute;
+    top: 0;
+    bottom:0;
 }

@@ -18,11 +18,11 @@ class CreateSalesTable extends Migration
 
             $table->string('SalesDate');
             $table->string('Sales');
+            
             $table->unsignedInteger('transaction_id');
-
-            $table->timestamps();
-
             $table->foreign('transaction_id')->references('id')->on('transactions');
+            
+            $table->timestamps();
         });
     }
 

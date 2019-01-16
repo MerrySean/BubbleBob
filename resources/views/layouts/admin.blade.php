@@ -18,7 +18,15 @@
 @endsection
 
 @section('content')
-    @yield('Auth.Content')
+    <div class="row w-100">
+        <div class="col s2">
+            @include('partials.links')
+        </div>
+  
+        <div class="col s10 text-center">
+            @yield('Auth.Content')
+        </div>
+    </div>
 @endsection
 
 @push('styles')

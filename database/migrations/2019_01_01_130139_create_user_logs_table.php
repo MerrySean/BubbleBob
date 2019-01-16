@@ -18,7 +18,6 @@ class CreateUserLogsTable extends Migration
 
             $table->unsignedInteger('user_id');
             $table->string('status');
-            $table->dateTime('date_time');
 
             $table->timestamps();
 

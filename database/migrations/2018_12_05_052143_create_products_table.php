@@ -19,7 +19,10 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->double('price');
             $table->string('type_of_product');
-            $table->string('Quantity');
+            $table->integer('quantity')->nullable();
+
+            $table->unsignedInteger('last_update_user');
+            $table->foreign('last_update_user')->references('id')->on('users');
 
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -40,5 +41,23 @@ class LoginController extends Controller
     public function username()
     {
         return 'username';
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        $logs = new \App\Models\User_Logs;
+        $logs->user_id = $user->id;
+        $logs->status = 'logged In';
+        $logs->user_id = $user->id;
+        $logs->save();
+    }
+
+    protected function BeforeloggedOut(Request $request, $user)
+    {
+        $logs = new \App\Models\User_Logs;
+        $logs->user_id = $user->id;
+        $logs->status = 'logged Out';
+        $logs->user_id = $user->id;
+        $logs->save();
     }
 }

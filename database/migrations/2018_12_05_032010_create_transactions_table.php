@@ -19,6 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->decimal('Total_Cost');
             $table->decimal('Customer_Change');
             $table->integer('Customer_id');
+
             $table->timestamps();
         });
     }

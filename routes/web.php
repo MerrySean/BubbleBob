@@ -20,15 +20,37 @@ Route::middleware('guest')->group(function () {
     Route::view('/', 'pages.welcome')->name('login');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return Auth::User();
+    })->name('login');
+
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+});
+
+
+
+
 Route::group(
     [
         'prefix' => 'admin',
         'middleware' => ['auth', 'admin']
     ],
     function () {
+        //Views
         Route::view('/dashboard', 'pages.admin.dashboard')->name('admin.dashboard');
+        Route::get('/users', 'PagesController@usersView')->name('admin.users');
+        Route::get('/users/logs', 'PagesController@usersLogsView')->name('admin.users.logs');
+        Route::get('/products', 'PagesController@productsView')->name('admin.products');
+        Route::get('/sales', 'PagesController@salesView')->name('admin.sales');
+        Route::get('/reports', 'PagesController@reportsView')->name('admin.reports');
+
+        //Data
+        Route::post('/product', 'productController@addProduct')->name('admin.products.add');
+        Route::get('/getProducts', 'productController@getProduct')->name('admin.products.get');
     }
 );
+
 
 Route::group(
     [
@@ -36,6 +58,6 @@ Route::group(
         'middleware' => ['auth', 'user']
     ],
     function () {
-        Route::view('/dashboard', 'pages.user.dashboard')->name('user.dashboard');
+        Route::get('/dashboard', 'PagesController@user_dashboard')->name('user.dashboard');
     }
 );
