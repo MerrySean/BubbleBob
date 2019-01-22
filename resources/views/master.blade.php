@@ -28,6 +28,14 @@
             .w-100 {
                 width: 100%;
             }
+
+            .p-0{
+                padding: 0 !important;
+            }
+
+            .m-0{
+                margin: 0 !important;
+            }
         </style>
 
         @stack('styles')
@@ -77,6 +85,7 @@
                 }
             });
             $(document).ready(function(){
+                M.AutoInit();
                 $('select').formSelect();
                 $('.sidenav').sidenav();
                 $(".dropdown-trigger").dropdown();
