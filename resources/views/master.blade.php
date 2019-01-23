@@ -16,6 +16,12 @@
             .d-flex{
                 display: flex;
             }
+            .d-none {
+                display: none !important;
+            }
+            .d-block {
+                display: block !important;
+            }
             .flex-column{
                 flex-direction: column;
             }

@@ -59,5 +59,7 @@ Route::group(
     ],
     function () {
         Route::get('/dashboard', 'PagesController@user_dashboard')->name('user.dashboard');
+        Route::get('/customerByName', 'SalesController@customerByName')->name('get.customerByName');
+        Route::post('/transactions', 'SalesController@transaction')->name('post.transaction');
     }
 );

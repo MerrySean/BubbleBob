@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction_Details extends Model
 {
     //
+    protected $table = 'transaction_details';
+    protected $fillable = ['transaction_id', 'transaction_by', 'product_id' ];
 }

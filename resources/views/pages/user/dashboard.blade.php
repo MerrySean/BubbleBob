@@ -114,8 +114,9 @@
         </div>
         {{-- TOP ROW --}}
 
+        
         {{-- BOTTOM ROW --}}
-        <div id="bottom-row" class="row w-100">
+        <div id="bottom-row" class="row w-100 d-block">
             <div class="col s8">
                 <div class="card blue">
                     <div class="card-content">
@@ -179,9 +180,17 @@
                 <div class="card blue">
                     <div class="card-content">
                         <span class="card-title center-align white-text">Customer Information</span>
-                        <div class="input-simple">
-                            <label class="white-text" for="cname"> Customer Name </label>
-                            <input id="cname" type="text" placeholder="Name">
+                        <div class="input-dropdown-autocomplete">
+                            <div class="input-simple">
+                                <label class="white-text" for="cname"> Customer Name </label>
+                                <input id="cname" type="text" placeholder="Name">
+                            </div>
+                            {{-- autocomplete-list-customer-containter --}}
+                            <div id="alcc" class="autocomplete-list d-none">
+                                <ul id="autocomplete-list-customer">
+                                    {{-- list is going to be populated by Javascript --}}
+                                </ul>
+                            </div>
                         </div>
                         <div class="input-simple">
                             <label class="white-text" for="cAddress"> Address </label>
@@ -204,6 +213,29 @@
             </div>
         </div>
         {{-- BOTTOM ROW --}}
+
+        {{-- bottom row hidden --}}
+        <div id="bottom-row-loading" class="row w-100 d-none">
+            <div class="col s8">
+                <div class="card blue">
+                    <div class="card-content">
+                        <h1 class="center-align">
+                            Loading
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col s4">
+                <div class="card blue">
+                    <div class="card-content">
+                        <h1 class="center-align">
+                            Loading
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- bottom row hidden --}}
     </div>
 @endsection
 
@@ -298,387 +330,115 @@
             color: red !important;
         }
     </style>
+    <style>
+    .input-dropdown-autocomplete{
+        width: 100%;
+        position: relative;
+    }
+    .input-dropdown-autocomplete > .input-simple{
+        position: relative;
+        z-index: 2;
+    }
+    .input-dropdown-autocomplete > .input-simple input{
+        margin: 0;
+    }
+
+    .autocomplete-list {
+        background-color: #fff;
+        position: absolute;
+        width: calc(100% + 10px);
+        top: 75%;
+        border: solid black 1px;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+    }
+    .autocomplete-list > ul{
+        margin-bottom: 0px;
+    }
+    .autocomplete-list > ul li{
+        border-bottom: solid black 1px;
+        padding: 5px
+    }
+    .autocomplete-list > ul li:hover{
+        background-color: bisque
+    }
+    .autocomplete-list > ul li:last-child{
+        border-bottom: none;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+    }
+    .list-customer-details {
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: start;
+    }
+    </style>
 @endpush
 
 @push('scripts')
+    {{-- Dashboard scripts --}}
+    <script src="{{asset('/js/userDashboard.js')}}"></script>
+
+    {{-- Autocomplere Script --}}
     <script>
-        var Services = {
-            wash : {
-                id: 0,
-                name: '',
-                price: 0
-            },
-            dry : {
-                id: 0,
-                name: '',
-                price: 0
-            },
-            additionals: []
-        }
-
-        var TransactionDetails = {
-            TotalCost: 0,
-            customerCash: 0,
-            change: 0,
-            customer: {
-                name: '',
-                address: '',
-                contact: '',
-            }
-        }
-
-        var ActiveButtons = {
-            additionals: []
-        }
-
-        var field = {
-            wash : $('#wash'),
-            wash_price : $('#wash-price'),
-            dry : $('#dry'),
-            dry_price : $('#dry-price'),
-            total_cost : $('#total-cost'),
-            cash_on_hand : $('#coh'),
-            change : $('#change'),
-            customer_name : $('#cname'),
-            customer_address : $('#cAddress'),
-            customer_contact : $('#cNumber'),
-        }
-
-        var InitFields = function (){   
-            $('#wash').val('')
-            $('#wash-price').val('')
-            $('#dry').val('')
-            $('#dry-price').val('')
-            $('#total-cost').val('')
-            $('#coh').val('')
-            $('#change').val('')
-            $('#cname').val('')
-            $('#cAddress').val('')
-            $('#cNumber').val('')
-        }
-
-        var clearValidations = function(){
-            // Wash
-                field.wash.removeClass('invalid')
-                field.wash.attr('placeholder', 'WASH')
-            // Dry
-                field.dry.removeClass('invalid')
-                field.dry.attr('placeholder', 'DRY')
-            // total Cost
-                field.total_cost.removeClass('invalid')
-            // Cash On Hand
-                field.cash_on_hand.removeClass('invalid')
-                field.cash_on_hand.attr('placeholder', '')
-            // Change
-                field.change.removeClass('invalid')
-                field.change.attr('placeholder', '0')
-            // Customer Name
-                field.customer_name.removeClass('invalid')
-                field.customer_name.attr('placeholder', 'Name')
-            // Customer Address
-                field.customer_address.removeClass('invalid')
-                field.customer_address.attr('placeholder', 'Address')
-            // Customer Contact
-                field.customer_contact.removeClass('invalid')
-                field.customer_contact.attr('placeholder', 'Contact')
-
-        }
-        var UpdateFieldAdditional = function (){
-            let a = $('#Additional-lists')
-            a.empty()
-            if(Services.additionals.length > 0){
-                for (const k in Services.additionals) {
-                    a.append(
-                        $('<div>').addClass('input-group inline')
-                            .append(
-                                $('<input>').val(Services.additionals[k].name).attr('readonly', true)
+        field.customer_name.keyup(function(){
+            let x = $(this).val()
+            axios.get('/user/customerByName', {
+                params: {
+                    name: x
+                }
+            }).then(function(res){
+                // clear list
+                $('#autocomplete-list-customer').empty()
+                // loop thou each customers found
+                for (const key in res.data) {
+                    // add items to list
+                    let n = "Name: " +  res.data[key].name
+                    let a = "Address: " + res.data[key].address
+                    let c = "Contact: " + res.data[key].contact
+                    $('#autocomplete-list-customer').append(
+                        $('<li>').append(
+                            $('<button>').append(
+                                $('<p>').text(n)
+                            ).append(
+                                $('<p>').text(a)
+                            ).append(
+                                $('<p>').text(c)
                             )
-                            .append(
-                                $('<input>').val(Services.additionals[k].price).attr('readonly', true)
-                            )
+                            .addClass('list-customer-details')
+                            .attr('data-name', res.data[key].name)
+                            .attr('data-address', res.data[key].address)
+                            .attr('data-contact', res.data[key].contact)
+                        )
                     )
                 }
-            }else{
-                a.append(
-                    $('<div>').addClass('input-group inline')
-                        .append(
-                            $('<input>').attr('placeholder', 'Additional').attr('readonly', true)
-                        )
-                        .append(
-                            $('<input>').attr('placeholder', 'Price').attr('readonly', true)
-                        )
-                )
-            }
-        }
-        var ComputeTotalCost = function(){
-            let total = 0
-            // Add wash price
-            total += Services.wash.price
-            // Add Dry price 
-            total += Services.dry.price
-            // Add Additionals price
-            let a = $('#Additional-lists')
-            for (const k in Services.additionals) {
-                total += Services.additionals[k].price
-            }
-            return total
-        }
-        var updateFields = function(){
-            // update wash data
-            let w = $('#wash')
-            let wp = $('#wash-price')
-            w.val(Services.wash.name);
-            wp.val(Services.wash.price);
-            // update Dry data
-            let d = $('#dry')
-            let dp = $('#dry-price')
-            d.val(Services.dry.name);
-            dp.val(Services.dry.price);
-            // update Additional data
-            UpdateFieldAdditional()
-            // compute total cost
-            TransactionDetails.TotalCost = ComputeTotalCost()
-            $('#total-cost').text(TransactionDetails.TotalCost)
-            //Update Change
-            TransactionDetails.change = TransactionDetails.customerCash - TransactionDetails.TotalCost
-            $('#change').val(TransactionDetails.change)
+                // show the list
+                $('#alcc').addClass('d-block')
+                $('#alcc').removeClass('d-none')
+                // on click of anything on the list
+                $('.list-customer-details').click(function(){
+                    let d = $(this)
+                    // set field value
+                    field.customer_name.val(d.data('name'))
+                    field.customer_address.val(d.data('address'))
+                    field.customer_contact.val(d.data('contact'))
 
-            clearValidations()
-        }
-        var AdditonalServiceExist = function(data){
-            for (const key in Services.additionals) {
-                let i = Services.additionals[key].id === data.id
-                let n = Services.additionals[key].name === data.name
-                let p = Services.additionals[key].price === data.price
-                if (i && n && p) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        var AllFieldsHasValue = function (){
+                    //set transaction details field
+                    TransactionDetails.customer.name =  d.data('name');
+                    TransactionDetails.customer.address =  d.data('address');
+                    TransactionDetails.customer.contact = d.data('contact');
 
-            let result = {
-                errors: {}
-            }
-
-            let c1 = Services.wash.name != ''
-            if(!c1){
-                result.errors.wash = 'No selected wash service'
-            }
-            let c2 = Services.dry.name != ''
-            if(!c2){
-                result.errors.dry = 'No selected dry service'
-            }
-            // uncomment if additional services is neccessary
-            // don't forget to include c3 in result.success
-            // let c3 = Services.additionals.length > 0
-            // if(!c3){
-            //     // TODO: ask sir maghanoy if Additional Services is neccesary...
-            //     result.errors.additionals = 'No selected Additional service'
-            // }
-            let c4 = TransactionDetails.TotalCost > 0
-            if(!c4){
-                result.errors.total_cost = 'No selected Services'
-            }
-            let c5 = TransactionDetails.customerCash > 0
-            if(!c5){
-                result.errors.cash_on_hand = 'No customer cash entered'
-            }
-            let c6 = TransactionDetails.change >= 0
-            if(!c6){
-                result.errors.change = 'Customer cash is not enough'
-            }
-            let c7 = TransactionDetails.customer.name != ''
-            if(!c7){
-                result.errors.customer_name = 'No Customer Name'
-            }
-            let c8 = TransactionDetails.customer.address != ''
-            if(!c8){
-                result.errors.customer_address = 'No Customer Address'
-            }
-            let c9 = TransactionDetails.customer.contact != ''
-            if(!c9){
-                result.errors.customer_contact = 'No Customer Contact'
-            }
-
-            result.success = c1 && c2 && c4 && c5 && c6 && c7 && c8 && c9
-
-            return result
-        }
-        var displayFieldErrors = function(f, e){
-            // console.log(f + " : " + e) 
-            let i = field[f]
-            i.addClass('invalid')
-            if(i.is('input')){
-                i.attr('placeholder', e)
-            }
-        }
-
-        var clearActiveButtons = function(){
-            let w = ActiveButtons.wash
-                w.removeClass('red')
-                w.addClass('blue-grey')
-            let d = ActiveButtons.dry
-                d.removeClass('red')
-                d.addClass('blue-grey')
-            let a = ActiveButtons.additionals.map(function (add){
-                add.removeClass('red')
-                add.addClass('blue-grey')
-            }) 
-            Services = {
-                    wash : {
-                        id: 0,
-                        name: '',
-                        price: 0
-                    },
-                    dry : {
-                        id: 0,
-                        name: '',
-                        price: 0
-                    },
-                    additionals: []
-                }
-            TransactionDetails = {
-                        TotalCost: 0,
-                        customerCash: 0,
-                        change: 0,
-                        customer: {
-                            name: '',
-                            address: '',
-                            contact: '',
-                        }
-                    }
-            ActiveButtons = {
-                additionals: []
-            }
-        }  
-        
-        
-
-        $(document).ready(function () {
-            InitFields()
-            //on click of any WASH button
-            $('.btn-wash').click(function(){
-                let x = $(this)
-                // check if a wash button is active
-                // if there was no active wash button
-                if(!ActiveButtons.wash){
-                    x.addClass('red')
-                    x.removeClass('blue-grey')
-                } else {
-                    // if button pressed is not current active
-                    if( x.data('id') !== Services.wash.id ) {
-                        // remove button color red of old active
-                        let o = ActiveButtons.wash
-                        o.removeClass('red')
-                        o.addClass('blue-grey')
-                        // add button color red of current active
-                        x.addClass('red')
-                        x.removeClass('blue-grey')
-                    }
-                }
-                // update services
-                Services.wash.id = x.data('id')
-                Services.wash.name = x.data('name')
-                Services.wash.price = x.data('price')
-                // update ActiveButton
-                ActiveButtons.wash = x
-                updateFields()
-            })
-            //on click of any DRY button
-            $('.btn-dry').click(function(){
-                let x = $(this)
-                // check if a wash button is active
-                // if there was no active wash button
-                if(!ActiveButtons.dry){
-                    x.addClass('red')
-                    x.removeClass('blue-grey')
-                } else {
-                    // if button pressed is not current active
-                    if( x.data('id') !== Services.dry.id ) {
-                        // remove button color red of old active
-                        let o = ActiveButtons.dry
-                        o.removeClass('red')
-                        o.addClass('blue-grey')
-                        // add button color red of current active
-                        x.addClass('red')
-                        x.removeClass('blue-grey')
-                    }
-                }
-                // update services
-                Services.dry.id = x.data('id')
-                Services.dry.name = x.data('name')
-                Services.dry.price = x.data('price')
-                // update ActiveButton
-                ActiveButtons.dry = x
-                updateFields()
-            })
-            //on click of any Additional button
-            $('.btn-additionals').click(function(){
-                let x = $(this)
-                let a = { 
-                    id: x.data('id'),
-                    name: x.data('name'),
-                    price: x.data('price')
-                }
-                if(!AdditonalServiceExist(a)){
-                    Services.additionals.push(a)
-                    ActiveButtons.additionals.push(x)
-                    x.addClass('red')
-                    x.removeClass('blue-grey')
-                }else{
-                    Services.additionals = Services.additionals.filter(d => d.id !== a.id);
-                    ActiveButtons.additionals = ActiveButtons.additionals.filter( d => d[0] !== x[0])
-                    x.removeClass('red')
-                    x.addClass('blue-grey')
-                }
-                updateFields()
-            })
-            //cash on hand input change
-            $('#coh').inputFilter(function(value) {
-                return /^-?\d*[.,]?\d{0,2}$/.test(value)
-            });
-            $('#coh').keyup(function(value) {
-                TransactionDetails.customerCash = Number($(this).val());
-                updateFields()
-            });
-            $('#cname').keyup(function(){
-                TransactionDetails.customer.name = $(this).val()
-            })
-            $('#cAddress').keyup(function(){
-                TransactionDetails.customer.address = $(this).val()
-            })
-            $('#cNumber').inputFilter(function(value) {
-                return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 99999999999)
-            });
-            $('#cNumber').keyup(function(){
-                TransactionDetails.customer.contact = $(this).val()
-            })
-            $('#btn-save').click(function(){
-                let check = AllFieldsHasValue()
-                if(!check.success){
-                    for (const key in check.errors) {
-                        if (check.errors.hasOwnProperty(key)) {
-                            const e = check.errors[key];
-                            displayFieldErrors(key, e)
-                        }
-                    }
-                } else {
-                    M.toast(
-                        {
-                            html: 'Transaction Success', 
-                            classes: 'rounded',
-                            displayLength: 2000,
-                            completeCallback: function() { 
-                                InitFields()
-                                clearActiveButtons()
-                                updateFields()
-                            }
-                        }
-                    )
-                }
+                    // clear list
+                    $('#autocomplete-list-customer').empty()
+                    // hide autocomplete list
+                    $('#alcc').addClass('d-block')
+                    $('#alcc').removeClass('d-none')
+                })
             })
         })
+
+        
+
     </script>
 @endpush
