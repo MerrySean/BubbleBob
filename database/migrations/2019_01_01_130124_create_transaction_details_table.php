@@ -18,13 +18,11 @@ class CreateTransactionDetailsTable extends Migration
             
             $table->unsignedInteger('transaction_id');
             $table->unsignedInteger('product_id');
-            $table->unsignedInteger('transaction_by');
             
             $table->timestamps();
 
             $table->foreign('transaction_id')->references('id')->on('transactions');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('transaction_by')->references('id')->on('users');
         });
     }
 

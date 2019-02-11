@@ -2,6 +2,23 @@
 
 @section('Auth.Content')
     <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col s12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                    <span class="card-title">Petty Cash</span>
+                        <div class="form-control">
+                            <label for="PettyCash">Petty Cash</label>
+                            <input id="PettyCash" type="text" placeholder="Enter Amount">
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <a href="javascript:AddPettyCash()">Add pocket money</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col s12">
                 <div class="card blue-grey darken-1">
@@ -11,13 +28,13 @@
                             <div class="col s6">
                                 <div class="form-control">
                                     <label for="from">From</label>
-                                    <input id="from" type="date" min="31-12-1990">
+                                    <input id="from" type="date">
                                 </div>
                             </div>
                             <div class="col s6">
                                 <div class="form-control">
                                     <label for="to">To</label>
-                                    <input id="to" type="date" max="{{ date('d/m/Y') }}">
+                                    <input id="to" type="date">
                                 </div>
                             </div>
                         </div>
@@ -80,14 +97,24 @@
 
 @push('scripts')
     <script>
+        //Add Pocket Money Button Click
+        function AddPettyCash(){
+                let money = $('#PettyCash').val()
+                // Send
+                axios.post('/admin/PettyCash',{money: money}).then(function(res){
+                    console.log(res.data.money)
+                })
+        }
+
         $(document).ready(function(){
             $('.sale_single_row').click(function(){
                 alert('row Click')
             })
 
-
-
-
+            // Filter Pocket Money textbox to only numbers
+            $('#PettyCash').inputFilter(function(value) {
+                return /^-?\d*[.]?\d{0,2}$/.test(value)
+            });
         })
     </script>
 @endpush

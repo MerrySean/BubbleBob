@@ -23,7 +23,7 @@
                         <input id="product_price" style="color: white;" type="text" class="validate">
                         <label for="product_price" style="color: white;">Product Price</label>
                     </div>
-                    <div id="product_quantity_wrapper" class="input-field col s4">
+                    <div id="pqw" class="input-field col s4">
                         <input id="product_quantity" style="color: white;" type="text" class="validate">
                         <label for="product_quantity" style="color: white;">Product Quantity</label>
                     </div>
@@ -35,24 +35,62 @@
                 </button>
             </div>
         </div>
-        <table id="products_table" class="responsive-table highlight">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{-- rows added by javascript --}}
-            </tbody>
-        </table>
+        <div class="card blue">
+            <ul id="tabs-swipe-demo" class="tabs blue darken-3">
+                <li class="tab col s4"><a class="white-text active"  href="#test-swipe-1">Wash</a></li>
+                <li class="tab col s4"><a class="white-text " href="#test-swipe-2">Dry</a></li>
+                <li class="tab col s4"><a class="white-text " href="#test-swipe-3">Additional</a></li>
+            </ul>
+            <div id="test-swipe-1" class="col s12 blue">
+                <table id="Wash" class="responsive-table highlight">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th class="head-action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- rows added by javascript --}}
+                    </tbody>
+                </table>
+            </div>
+            <div id="test-swipe-2" class="col s12 blue">
+                <table id="Dry" class="responsive-table highlight">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th class="head-action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- rows added by javascript --}}
+                    </tbody>
+                </table>
+            </div>
+            <div id="test-swipe-3" class="col s12 blue">
+                <table id="Additional" class="responsive-table highlight">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th class="head-action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- rows added by javascript --}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <!-- Modal Structure -->
         <div id="modal_update" class="modal">
-            <div class="modal-content">
+            <div class="modal-content" style="min-height: 400px;">
                 <h4>Product Update</h4>
                 <div class="row">
                     <div class="input-field col s4">
@@ -66,20 +104,21 @@
                     </div>
                     <div class="input-field col s4">
                         <input id="m_product_name" type="text" class="validate">
-                        <label for="product_name">Product Name</label>
+                        <label class="active" for="product_name">Product Name</label>
                     </div>
                     <div class="input-field col s4">
                         <input id="m_product_price" type="text" class="validate">
-                        <label for="product_price">Product Price</label>
+                        <label class="active" for="product_price">Product Price</label>
                     </div>
-                    <div id="product_quantity_wrapper" class="input-field col s4">
+                    <div id="pqwu" class="input-field col s4">
                         <input id="m_product_quantity" type="text" class="validate">
-                        <label for="product_quantity">Product Quantity</label>
+                        <label class="active" for="product_quantity">Product Quantity</label>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Update</a>
+                <a id="product_update" href="#!" class="modal-close waves-effect waves-green btn-flat">Update</a>
+                <a id="product_cancel" href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
             </div>
         </div>
     </div>            
@@ -88,6 +127,9 @@
 @push('styles')
     <!-- Styles -->
     <style>
+        .tabs .tab a:focus, .tabs .tab a:focus.active, .tabs .tab a.active {
+            background-color: rgb(33, 150, 243);
+        }
         .sidenav.sidenav-fixed {
             position: absolute;
             top: 0;
@@ -121,125 +163,12 @@
             margin-left: 2px;
             margin-right: 2px;
         }
+        .cell-action, .head-action {
+            text-align: center;
+        }
     </style>
 @endpush
 
 @push('scripts')
-    <script>
-
-        var product = {
-            type: '',
-            name: '',
-            price: '',
-            quantity: ''
-        }
-
-        var ToUpdateProduct = {
-            type: '',
-            name: '',
-            price: '',
-            quantity: ''
-        }
-
-        var initProduct = function(){
-            product.type = $('#product_type').val()
-            product.name = $('#product_name').val()
-            product.price = $('#product_price').val()
-            product.quantity = $('#product_quantity').val()
-        }
-
-        var handleQuantityWrapper = function(){
-            if(product.type == 'Additional'){
-                $('#product_quantity_wrapper').show()
-            }else{
-                $('#product_quantity_wrapper').hide()
-            }
-        }
-
-        var UpdateModalOpen = function (id){
-            const s = $("#products_table").find('tbody').find('#'+id)
-            console.log(s)
-        }
-
-        var TableAddRow = function (data){
-            $("#products_table").find('tbody')
-                .append($('<tr>').attr('id', data.id)
-                    .append($('<td>')
-                        .text('')
-                    ).append($('<td>')
-                        .text(data.name)
-                    ).append($('<td>')
-                        .text(data.type_of_product)
-                    ).append($('<td>')
-                        .text(data.price)
-                    ).append($('<td>')
-                        .text(data.quantity)
-                    ).append($('<td>')
-                        .append($('<a>')
-                            .addClass('waves-effect waves-light btn modal-trigger')
-                            .text('Update')
-                            .attr("href", "#modal_update")
-                            .attr("data-id" , data.id)
-                        ).append($('<button>')
-                            .addClass('btn red darken-2')
-                            .text('Delete')
-                        )
-                    )
-                );
-        }
-
-        var updateTable = function (){
-            axios.get('/admin/getProducts',product).then(function(res){
-                for (const x in res.data) {
-                    if (res.data.hasOwnProperty(x)) {
-                        TableAddRow(res.data[x])
-                    }
-                }
-            })
-        }
-
-        $(document).ready(function(){
-            $('.modal').modal({
-                onOpenStart: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-                    UpdateModalOpen($(trigger).data('id'))
-                },
-            });
-            initProduct()
-            handleQuantityWrapper()
-            updateTable()
-            //handle type change
-            $('#product_type').change(function(){
-                product.type = $(this).val()
-                handleQuantityWrapper();
-            })
-            //handle price change
-            $("#product_name").change(function(){
-                product.name = $(this).val()
-            });
-            //handle price change
-            $("#product_price").change(function(){
-                product.price = $(this).val()
-            });
-            //handle quantity change
-            $("#product_quantity").change(function(){
-                product.quantity = $(this).val()
-            });
-
-            // set input filter
-            $("#product_price").inputFilter(function(value) {
-                return /^-?\d*[.,]?\d{0,2}$/.test(value);
-            });
-            $("#product_quantity").inputFilter(function(value) {
-                return /^\d*$/.test(value)
-            });
-
-            // Save Product
-            $("#product_save").click(function(){
-                axios.post('/admin/product',product).then(function(res){
-                    TableAddRow(res.data)
-                })
-            })
-
-        })
-    </script>
+    <script src="/js/products.js"></script>
 @endpush

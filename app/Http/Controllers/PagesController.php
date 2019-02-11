@@ -27,7 +27,7 @@ class PagesController extends Controller
     public function salesView()
     {
         $d = new \App\Models\Sale;
-        return view('pages.admin.sales')->with('users', $d->all());
+        return view('pages.admin.sales')->with('sales', $d->getProductSales());
     }
 
     public function reportsView()
@@ -44,5 +44,12 @@ class PagesController extends Controller
                     ->with('wash', array_chunk($d->GetWash()->toArray(),2))
                     ->with('dry', array_chunk($d->GetDry()->toArray(),2))
                     ->with('additionals', array_chunk($d->GetAdditional()->toArray(),2));
+    }
+
+    // Petty Cash View
+    public function PettyCashView()
+    {
+        $d = new \App\Models\Sale;
+        return view('pages.admin.pettyCash')->with('sales', $d->getPettyCashTransactions());
     }
 }

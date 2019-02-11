@@ -25,6 +25,7 @@ class CreateProductsTable extends Migration
             $table->foreign('last_update_user')->references('id')->on('users');
 
             $table->timestamps();
+            
         });
     }
 

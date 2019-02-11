@@ -11,6 +11,7 @@
                     <th>Age</th>
                     <th>Address</th>
                     <th>Email</th>
+                    <th>Contact</th>
                     <th>username</th>
                     <th>User Type</th>
                     <th>User Status</th>
@@ -25,6 +26,7 @@
                         <td>{{ $user->age }}</td>
                         <td>{{ $user->address }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>{{ $user->contact }}</td>
                         <td>{{ $user->username }}</td>
                         <td>{{ $user->user_type }}</td>
                         <td>{{ $user->user_status }}</td>

@@ -203,7 +203,6 @@ var AllFieldsHasValue = function (){
     return result
 }
 var displayFieldErrors = function(f, e){
-    // console.log(f + " : " + e) 
     let i = field[f]
     i.addClass('invalid')
     if(i.is('input')){
@@ -272,7 +271,6 @@ var toggleLoading = function(s){
 var SubmitTransactionDetailsToserver = function (data, button) {
     button.prop('disabled', true);
     toggleLoading("show")
-    console.log('no error')
     M.toast(
         {
             html: 'Submitting Transaction Details', 
@@ -286,7 +284,6 @@ var SubmitTransactionDetailsToserver = function (data, button) {
         }
     )
     axios.post('/user/transactions',data).then(function(res){
-        console.log(res.data)
         button.prop('disabled', false);
         toggleLoading("hide")
         M.Toast.dismissAll();
@@ -296,8 +293,7 @@ var SubmitTransactionDetailsToserver = function (data, button) {
                 classes: 'rounded',
                 displayLength: 5000,
             }
-        )
-        
+        )   
     })
 }
 

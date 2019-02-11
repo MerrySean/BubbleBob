@@ -21,6 +21,9 @@ class CreateTransactionsTable extends Migration
             $table->decimal('Customer_Change');
             $table->integer('Customer_id');
 
+            $table->unsignedInteger('transaction_by');
+            $table->foreign('transaction_by')->references('id')->on('users');
+
             $table->timestamps();
         });
     }

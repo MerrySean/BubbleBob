@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('age');
             $table->string('address');
             $table->string('email')->unique();
+            $table->string('contact')->unique();
             $table->string('username')->unique();
             $table->string('user_type');
             $table->string('user_status');

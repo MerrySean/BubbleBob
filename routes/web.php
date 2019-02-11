@@ -38,16 +38,22 @@ Route::group(
     ],
     function () {
         //Views
-        Route::view('/dashboard', 'pages.admin.dashboard')->name('admin.dashboard');
-        Route::get('/users', 'PagesController@usersView')->name('admin.users');
-        Route::get('/users/logs', 'PagesController@usersLogsView')->name('admin.users.logs');
-        Route::get('/products', 'PagesController@productsView')->name('admin.products');
-        Route::get('/sales', 'PagesController@salesView')->name('admin.sales');
-        Route::get('/reports', 'PagesController@reportsView')->name('admin.reports');
+        Route::view('/dashboard',   'pages.admin.dashboard')->name('admin.dashboard');
+        Route::get('/users',        'PagesController@usersView')->name('admin.users');
+        Route::get('/users/logs',   'PagesController@usersLogsView')->name('admin.users.logs');
+        Route::get('/products',     'PagesController@productsView')->name('admin.products');
+        Route::get('/sales',        'PagesController@salesView')->name('admin.sales');
+        Route::get('/PettyCash',    'PagesController@PettyCashView')->name('admin.PettyCash');
+        Route::get('/reports',      'PagesController@reportsView')->name('admin.reports');
 
         //Data
         Route::post('/product', 'productController@addProduct')->name('admin.products.add');
-        Route::get('/getProducts', 'productController@getProduct')->name('admin.products.get');
+        Route::get('/getProducts/{type}', 'productController@getProduct')->name('admin.products.get');
+        Route::post('/update/product', 'productController@UpdateProduct')->name('admin.products.update');
+        Route::post('/delete/product', 'productController@DeleteProduct')->name('admin.products.Delete');
+
+        //Pocket Money Transaction
+        Route::post('/PettyCash', 'SalesController@PettyCash')->name('admin.PettyCash');
     }
 );
 

@@ -50,12 +50,22 @@
                             @endif
                         </div>
                         {{-- Address --}}
-                        <div class="input-field col s12">
-                            <input id="address" type="text" class="validate {{ $errors->has('address') ? ' invalid' : '' }}" name="address" value="{{ old('address') }}" required autofocus>
+                        <div class="input-field col s6">
+                            <input id="address" type="textarea" class="validate {{ $errors->has('address') ? ' invalid' : '' }}" name="address" value="{{ old('address') }}" required autofocus>
                             <label for="address">{{ __('address') }}</label>
                             @if ($errors->has('address'))
                                 <span class="helper-text" data-error="wrong" data-success="right">
                                     <strong>{{ $errors->first('address') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        {{-- Address --}}
+                        <div class="input-field col s6">
+                            <input id="contact" type="text" class="validate {{ $errors->has('contact') ? ' invalid' : '' }}" name="contact" value="{{ old('contact') }}" required autofocus>
+                            <label for="contact">{{ __('contact') }}</label>
+                            @if ($errors->has('contact'))
+                                <span class="helper-text" data-error="wrong" data-success="right">
+                                    <strong>{{ $errors->first('contact') }}</strong>
                                 </span>
                             @endif
                         </div>
