@@ -47,7 +47,7 @@ class SalesController extends Controller
                 );
             }
         // Send a Response of success
-        return response()->json([ 'success' => true ]);
+        return response()->json([ 'success' => true, 'staff' => $r->user() ]);
     }
 
     public function customerByName(Request $r)

@@ -236,6 +236,12 @@
             </div>
         </div>
         {{-- bottom row hidden --}}
+
+        {{-- Start Receipt --}}
+        <div style="width:302.362205px; margin: auto;">
+            @include('pages.user.receipt')
+        </div>
+        {{-- End Receipt --}}
     </div>
 @endsection
 
@@ -331,56 +337,61 @@
         }
     </style>
     <style>
-    .input-dropdown-autocomplete{
-        width: 100%;
-        position: relative;
-    }
-    .input-dropdown-autocomplete > .input-simple{
-        position: relative;
-        z-index: 2;
-    }
-    .input-dropdown-autocomplete > .input-simple input{
-        margin: 0;
-    }
+        .input-dropdown-autocomplete{
+            width: 100%;
+            position: relative;
+        }
+        .input-dropdown-autocomplete > .input-simple{
+            position: relative;
+            z-index: 2;
+        }
+        .input-dropdown-autocomplete > .input-simple input{
+            margin: 0;
+        }
 
-    .autocomplete-list {
-        background-color: #fff;
-        position: absolute;
-        width: calc(100% + 10px);
-        top: 75%;
-        border: solid black 1px;
-        border-bottom-left-radius: 25px;
-        border-bottom-right-radius: 25px;
-    }
-    .autocomplete-list > ul{
-        margin-bottom: 0px;
-    }
-    .autocomplete-list > ul li{
-        border-bottom: solid black 1px;
-        padding: 5px
-    }
-    .autocomplete-list > ul li:hover{
-        background-color: bisque
-    }
-    .autocomplete-list > ul li:last-child{
-        border-bottom: none;
-        border-bottom-left-radius: 25px;
-        border-bottom-right-radius: 25px;
-    }
-    .list-customer-details {
-        background: transparent;
-        border: none;
-        width: 100%;
-        text-align: start;
-    }
+        .autocomplete-list {
+            background-color: #fff;
+            position: absolute;
+            width: calc(100% + 10px);
+            top: 75%;
+            border: solid black 1px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+        .autocomplete-list > ul{
+            margin-bottom: 0px;
+        }
+        .autocomplete-list > ul li{
+            border-bottom: solid black 1px;
+            padding: 5px
+        }
+        .autocomplete-list > ul li:hover{
+            background-color: bisque
+        }
+        .autocomplete-list > ul li:last-child{
+            border-bottom: none;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+        .list-customer-details {
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: start;
+        }
     </style>
+
+    {{-- Printing receipt styles --}}
+    <link rel="stylesheet" href="/css/print.min.css">
+    <link rel="stylesheet" href="/css/receipt.css">
+
 @endpush
 
 @push('scripts')
     {{-- Dashboard scripts --}}
     <script src="{{asset('/js/userDashboard.js')}}"></script>
 
-    {{-- Autocomplere Script --}}
+    {{-- Autocomplere customer details Script --}}
     <script>
         field.customer_name.keyup(function(){
             let x = $(this).val()
@@ -437,8 +448,74 @@
                 })
             })
         })
+    </script>
 
-        
+    {{-- Print on transaction success --}}
+    <script src="/js/print.min.js"></script>
+    <script>
+        function generateReciept(res){
+            let els = {
+                wash: {
+                    name: $('#wash-service-name')[0],
+                    price: $('#wash-service-price')[0]
+                },
+                dry: {
+                    name: $('#dry-service-name')[0],
+                    price: $('#dry-service-price')[0]
+                },
+                additionals: $('#additionals')[0],
+                customer: {
+                    name: $('#customer-name')[0],
+                },
+                staff: {
+                    name: $('#staff-name')[0],
+                },
+                details: {
+                    // or : $('#or-number')[0],
+                    total: $('#total')[0],
+                    cash: $('#cash')[0],
+                    change: $('#change')[0]
+                }
+            }
+            //update fields
+            els.wash.name.textContent = Services.wash.name
+            els.wash.price.textContent = Services.wash.price
+            els.dry.name.textContent = Services.dry.name
+            els.dry.price.textContent = Services.dry.price
+            additionalPrintables()
+            els.customer.name.textContent = TransactionDetails.customer.name
+            els.staff.name.textContent = res.data.staff.firstname + " " + res.data.staff.lastname
+            // els.details.or.textContent = TransactionDetails.TotalCost
+            els.details.total.textContent = TransactionDetails.TotalCost
+            els.details.cash.textContent = TransactionDetails.customerCash
+            els.details.change.textContent = TransactionDetails.change
+        }
 
+        // generate additional services printables
+        function additionalPrintables(){
+            for (const key in Services.additionals) {
+                $('#additionals').append(
+                    $('<div>').addClass('col').addClass('s6').append(
+                        $('<b>').addClass('additional-service-name').text(Services.additionals[key].name)
+                    )
+                ).append(
+                    $('<div>').addClass('col').addClass('s6').addClass('text-end').append(
+                        $('<span>').addClass('additional-service-price').text(Services.additionals[key].price)
+                    )
+                )
+            }
+        }
+
+        //setup printable element block
+        function printReceipt(res){
+            generateReciept(res)
+            printJS({ 
+                    printable: 'PrintableReciept', 
+                    type: 'html',
+                    css: ['/css/app.css','/css/receipt.css'],
+                    maxWidth: 1000,
+                    documentTitle: 'Official Receipt'
+                })
+        }
     </script>
 @endpush

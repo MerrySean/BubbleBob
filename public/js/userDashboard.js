@@ -120,16 +120,10 @@ var ComputeTotalCost = function(){
     return total
 }
 var updateFields = function(){
-    // update wash data
-    let w = $('#wash')
-    let wp = $('#wash-price')
-    w.val(Services.wash.name);
-    wp.val(Services.wash.price);
-    // update Dry data
-    let d = $('#dry')
-    let dp = $('#dry-price')
-    d.val(Services.dry.name);
-    dp.val(Services.dry.price);
+    field.wash.val(Services.wash.name);
+    field.wash_price.val(Services.wash.price);
+    field.dry.val(Services.dry.name);
+    field.dry_price.val(Services.dry.price);
     // update Additional data
     UpdateFieldAdditional()
     // compute total cost
@@ -284,6 +278,7 @@ var SubmitTransactionDetailsToserver = function (data, button) {
         }
     )
     axios.post('/user/transactions',data).then(function(res){
+        printReceipt(res);
         button.prop('disabled', false);
         toggleLoading("hide")
         M.Toast.dismissAll();
