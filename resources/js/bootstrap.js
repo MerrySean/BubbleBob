@@ -58,4 +58,8 @@ if (token) {
 
 window.moment = require("moment");
 
+window.Pikaday = require("pikaday");
+
+// require("flatpickr")
+
 

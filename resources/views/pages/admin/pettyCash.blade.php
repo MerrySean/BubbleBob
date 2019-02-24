@@ -19,32 +19,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s12">
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                    <span class="card-title">Filter</span>
-                        <div class="row">
-                            <div class="col s6">
-                                <div class="form-control">
-                                    <label for="from">From</label>
-                                    <input id="from" type="date">
-                                </div>
-                            </div>
-                            <div class="col s6">
-                                <div class="form-control">
-                                    <label for="to">To</label>
-                                    <input id="to" type="date">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <a href="javascript:AddPettyCash()">Apply Filter</a>
-                    </div>
-                </div>
-            </div>
-        </div>
         <table class="responsive-table highlight">
             <thead>
                 <tr>

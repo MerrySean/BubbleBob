@@ -8,7 +8,7 @@ class PagesController extends Controller
 {
     public function usersView()
     {
-        $d = new \App\Models\User;;
+        $d = new \App\Models\User;
         return view('pages.admin.users')->with('users', $d->all());
     }
 
@@ -27,7 +27,10 @@ class PagesController extends Controller
     public function salesView()
     {
         $d = new \App\Models\Sale;
-        return view('pages.admin.sales')->with('sales', $d->getProductSales());
+        return view('pages.admin.sales')
+        ->with('sales', $d->getProductSales())
+        ->with('MaxDate', $d->getSalesMaxDate())
+        ->with('MinDate', $d->getSalesMinDate());
     }
 
     public function reportsView()

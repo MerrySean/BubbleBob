@@ -12,6 +12,7 @@ class Sale extends Model
 
         foreach ($sales as $k => $t) {
             $d = [
+                'id' => $t->id,
                 'Details' => [
                     'Cash' => $t->Customer_Cash,
                     'Cost' =>  $t->Total_Cost,
@@ -35,9 +36,7 @@ class Sale extends Model
     public function getProductSales()
     {
         $ti = new \App\Models\Transaction;
-        $a = new \App\Models\User;
-        $a = $a->select('id')->where('user_type' , 'admin')->get()->toArray();
-        return $this->getTransactionDetailsOf($ti->whereNotIn('transaction_by', [$a])->get());
+        return $this->getTransactionDetailsOf($ti->all());
     }
 
     public function getPettyCashTransactions()
@@ -46,5 +45,17 @@ class Sale extends Model
         $a = new \App\Models\User;
         $a = $a->select('id')->where('user_type' , 'admin')->get()->toArray();
         return $this->getTransactionDetailsOf($ti->whereIn('transaction_by', [$a])->get());
+    }
+
+    public function getSalesMaxDate()
+    {
+        $ti = new \App\Models\Transaction;
+        return $ti->select('created_at')->orderBy('created_at','desc')->first();
+    }
+
+    public function getSalesMinDate()
+    {
+        $ti = new \App\Models\Transaction;
+        return $ti->select('created_at')->orderBy('created_at')->first();
     }
 }

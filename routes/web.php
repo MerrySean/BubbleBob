@@ -1,7 +1,5 @@
 <?php
 
-use GuzzleHttp\Middleware;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,14 +20,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/user', function (Request $request) {
-        return Auth::User();
+        return redirect('/');
     })->name('login');
 
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 });
-
-
-
 
 Route::group(
     [
@@ -52,11 +47,13 @@ Route::group(
         Route::post('/update/product', 'productController@UpdateProduct')->name('admin.products.update');
         Route::post('/delete/product', 'productController@DeleteProduct')->name('admin.products.Delete');
 
+        // filter Data
+        Route::get('/filter/{model}', 'FilterController@SortByDate')->name('admin.filters');
+
         //Pocket Money Transaction
         Route::post('/PettyCash', 'SalesController@PettyCash')->name('admin.PettyCash');
     }
 );
-
 
 Route::group(
     [

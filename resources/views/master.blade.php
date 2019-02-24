@@ -83,6 +83,7 @@
 
         {{-- Scripts --}}
         <script src="/js/app.js"></script>
+        <script src="/js/notify.js"></script>
         <script>
             // Ajax request all headers have csrf token
             $.ajaxSetup({
