@@ -36,7 +36,7 @@
             <tbody id="pettyCash_table_body">
                 @foreach ($sales as $sale)
                     <tr class="pettyCash_single_row" >
-                        <td>{{ $loop->iteration }}</td>
+                        <td></td>
                         <td>{{ $sale['Customer']['Name'] }}</td>
                         <td>{{ $sale['Customer']['Contact'] }}</td>
                         <td>{{ $sale['Customer']['Address'] }}</td>
@@ -66,6 +66,17 @@
             cursor: pointer;
             background-color: #0544a28c !important;
         }
+        table {
+            counter-reset: rowNumber;
+        }
+        table tbody tr {
+            counter-increment: rowNumber;
+        }
+        table tbody tr td:first-child::before{
+            content: counter(rowNumber);
+            min-width: 1em;
+            margin-right: 0.5em;
+        }
     </style>
 @endpush
 
@@ -77,14 +88,14 @@
             $('#pettyCash_table_body').append(
                 `
                     <tr class="pettyCash_single_row" >
-                        <td>${data.id}</td>
+                        <td></td>
                         <td>${data.Customer.Name}</td>
                         <td>${data.Customer.Contact}</td>
                         <td>${data.Customer.Address}</td>
                         <td>${Number(data.Details.Cash).toFixed(2)}</td>
                         <td>${Number(data.Details.Cost).toFixed(2)}</td>
                         <td>${Number(data.Details.Change).toFixed(2)}</td>
-                        <td>${moment(data.Details.transaction_date.date).format('ddd, MMM D, YYYY h:mm a')}</td>
+                        <td>${moment(data.Details.transaction_date.date).format('ddd, MMM D, YYYY h:mm A')}</td>
                         <td>${data.Details.transaction_by}</td>
                     </tr> 
                 `
