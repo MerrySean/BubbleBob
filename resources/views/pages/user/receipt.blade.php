@@ -1,4 +1,4 @@
-<div id="PrintableReciept">
+<div id="PrintableReciept" class="printables">
     <header>
         {{-- header --}}
         <h1>Bubble Bob</h1>

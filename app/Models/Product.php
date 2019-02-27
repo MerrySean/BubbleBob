@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use DB;
 
 class Product extends Model
 {
@@ -42,5 +43,10 @@ class Product extends Model
     public function GetOrCreateProduct($f)
     {
         return $this->firstOrCreate($f);
+    }
+
+    public function GetPriceOnDate($date)
+    {
+        return DB::table('product_price_updates')->select('*')->where('product_id', $this->id)->where('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
     }
 }

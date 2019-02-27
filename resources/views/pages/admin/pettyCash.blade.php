@@ -33,9 +33,9 @@
                     <th>Transacted By</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="pettyCash_table_body">
                 @foreach ($sales as $sale)
-                    <tr class="sale_single_row" >
+                    <tr class="pettyCash_single_row" >
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $sale['Customer']['Name'] }}</td>
                         <td>{{ $sale['Customer']['Contact'] }}</td>
@@ -43,7 +43,7 @@
                         <td>{{ $sale['Details']['Cash'] }}</td>
                         <td>{{ $sale['Details']['Cost'] }}</td>
                         <td>{{ $sale['Details']['Change'] }}</td>
-                        <td>{{ $sale['Details']['transaction_date'] }}</td>
+                        <td>{{ \Carbon\Carbon::parse($sale['Details']['transaction_date'])->toDayDateTimeString() }}</td>
                         <td>{{ $sale['Details']['transaction_by'] }}</td>
                     </tr>
                 @endforeach
@@ -71,12 +71,32 @@
 
 @push('scripts')
     <script>
+
+        var tableAddRow = function(data){
+            console.log(data);
+            $('#pettyCash_table_body').append(
+                `
+                    <tr class="pettyCash_single_row" >
+                        <td>${data.id}</td>
+                        <td>${data.Customer.Name}</td>
+                        <td>${data.Customer.Contact}</td>
+                        <td>${data.Customer.Address}</td>
+                        <td>${Number(data.Details.Cash).toFixed(2)}</td>
+                        <td>${Number(data.Details.Cost).toFixed(2)}</td>
+                        <td>${Number(data.Details.Change).toFixed(2)}</td>
+                        <td>${moment(data.Details.transaction_date.date).format('ddd, MMM D, YYYY h:mm a')}</td>
+                        <td>${data.Details.transaction_by}</td>
+                    </tr> 
+                `
+            )
+        }
+
         //Add Pocket Money Button Click
         function AddPettyCash(){
                 let money = $('#PettyCash').val()
                 // Send
                 axios.post('/admin/PettyCash',{money: money}).then(function(res){
-                    console.log(res.data.money)
+                    tableAddRow(res.data)
                 })
         }
 

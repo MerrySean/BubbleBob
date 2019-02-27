@@ -1,32 +1,46 @@
-#PrintableReciept{
+#PrintableReciept,
+#PrintableReport{
     width: 100%;
     height: 100%;
     text-align: center;
     padding: 15px;
     display:none;
 }
-.text-end{
+
+.printables .text-end{
     text-align: end;
 }
-.text-left {
+.printables .text-left {
     text-align: left;
 }
-.text-center {
+.printables .text-center {
     text-align: center;
 }
 
-* {
+.printables * {
     font-size: 10px;
 }
 
-h1 {
+.printables h1 {
     font-size: 45px;
 }
-h4 {
+.printables h4 {
     font-size: 25px;
 }
-h5 {
+.printables h5 {
     font-size: 15px;
+}
+
+table#sales_report {
+    counter-reset: rowNumber;
+}
+table#sales_report tbody tr {
+    counter-increment: rowNumber;
+}
+table#sales_report tbody tr td:first-child::before{
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
 }
 
 @page {
@@ -36,7 +50,8 @@ h5 {
 }
 
 @media print {
-    #PrintableReciept{
+    #PrintableReciept,
+    #PrintableReport{
         display:block !important;
     }
 }

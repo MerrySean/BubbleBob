@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Sale;
 
 class SalesController extends Controller
 {
     //
 
+    // Add new transaction
     public function transaction(Request $r)
     {
         $ci = new \App\Models\Customer;
@@ -50,6 +52,7 @@ class SalesController extends Controller
         return response()->json([ 'success' => true, 'staff' => $r->user() ]);
     }
 
+    // Get customer by name
     public function customerByName(Request $r)
     {
         if ($r->query('name') == '') {
@@ -60,6 +63,7 @@ class SalesController extends Controller
         return response()->json($c);
     }
 
+    // Add new Petty Cash
     public function PettyCash(Request $r)
     {
         $ci = new \App\Models\Customer;
@@ -101,8 +105,16 @@ class SalesController extends Controller
                     'product_id'    => $pi->id
                 ]
             );
-            
+        $s = new Sale;
+        $t = $s->getTransactionDetailsOf($ti->toArray());
         // Send a Response of success
-        return response()->json([ 'success' => true ]);
+        return response()->json($t);
+    }
+
+    // Get Transation by ID
+    public function getSaleById($id)
+    {
+        $s = new Sale;
+        return response()->json($s->GetTransactionById($id));
     }
 }

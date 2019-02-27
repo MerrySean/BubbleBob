@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/user', function (Request $request) {
         return redirect('/');
-    })->name('login');
+    });
 
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 });
@@ -46,6 +46,9 @@ Route::group(
         Route::get('/getProducts/{type}', 'productController@getProduct')->name('admin.products.get');
         Route::post('/update/product', 'productController@UpdateProduct')->name('admin.products.update');
         Route::post('/delete/product', 'productController@DeleteProduct')->name('admin.products.Delete');
+
+        // sales
+        Route::get('/Sales/{id}', 'SalesController@getSaleById')->name('admin.products.get');
 
         // filter Data
         Route::get('/filter/{model}', 'FilterController@SortByDate')->name('admin.filters');

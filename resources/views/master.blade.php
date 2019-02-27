@@ -25,6 +25,10 @@
             .flex-column{
                 flex-direction: column;
             }
+            /* class is for flex displays only */
+            .justify-content-between {
+                justify-content: space-between;
+            }
             .min-h-100{
                 min-height: 100%;
             }
@@ -34,10 +38,16 @@
             .w-100 {
                 width: 100%;
             }
+            .w-25 {
+                width: 25%;
+            }
 
             .p-0{
                 padding: 0 !important;
             }
+            /* .pl-3 {
+                padding-left: 1.5rem !important;
+            } */
 
             .m-0{
                 margin: 0 !important;
