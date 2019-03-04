@@ -1,7 +1,7 @@
 @extends('layouts.Auth')
 
 @section('Auth.Content')
-    <h1>COMING SOON</h1>
+    <h1>Profile</h1>
 @endsection
 
 

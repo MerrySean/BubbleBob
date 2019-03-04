@@ -55,4 +55,10 @@ class PagesController extends Controller
         $d = new \App\Models\Sale;
         return view('pages.admin.pettyCash')->with('sales', $d->getPettyCashTransactions());
     }
+
+    // logged-in user's Profiles page
+    public function profile()
+    {
+        return view('pages.profile');
+    }
 }

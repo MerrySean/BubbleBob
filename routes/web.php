@@ -23,7 +23,8 @@ Route::middleware('auth')->group(function () {
         return redirect('/');
     });
 
-    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+    Route::get('/logout',   'Auth\LoginController@logout')->name('logout');
+    Route::get('/Account',  'PagesController@profile')->name('profile');
 });
 
 Route::group(

@@ -71,6 +71,7 @@
                     </div>
                 </nav>
             </header>
+            
             <main style="display: flex;">
                 @yield('content')
             </main>
