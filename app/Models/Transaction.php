@@ -46,27 +46,19 @@ class Transaction extends Model
     public function GetFullTransactionDetails()
     {
         $FullDetails = [
+            'Special' => [],
+            'Wash' => [],
+            'Dry' => [],
             'Additional' => []
         ];
         foreach ($this->Details as $k2 => $td) {
-            if ($td->product->type_of_product == 'Additional') {
-                array_push($FullDetails['Additional'], [
-                    'name' =>  $td->product->name,
-                    'price' => $td->product->GetPriceOnDate($this->created_at)->new_price,
-                    'type_of_product' => $td->product->type_of_product,
-                    'quantity' => $td->product->quantity,
-                    'last_update_user' => $td->product->last_update_user,
-                ]);
-            } else {
-                $FullDetails[$td->product->type_of_product] = [
-                            'id' =>  $td->product->id,
-                            'name' =>  $td->product->name,
-                            'price' => $td->product->GetPriceOnDate($this->created_at)->new_price,
-                            'type_of_product' => $td->product->type_of_product,
-                            'quantity' => $td->product->quantity,
-                            'last_update_user' => $td->product->last_update_user,
-                ];
-            }
+            array_push($FullDetails[$td->product->type_of_product], [
+                'name' =>  $td->product->name,
+                'price' => $td->product->GetPriceOnDate($this->created_at)->new_price,
+                'type_of_product' => $td->product->type_of_product,
+                'quantity' => $td->product->quantity,
+                'last_update_user' => $td->product->last_update_user
+            ]);
         }
         return $FullDetails;
     }

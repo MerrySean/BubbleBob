@@ -23,6 +23,10 @@
                         <input id="product_price" style="color: white;" type="text" class="validate">
                         <label for="product_price" style="color: white;">Product Price</label>
                     </div>
+                    <div class="input-field col s4">
+                        <textarea id="product_description" style="color: white;" class="validate materialize-textarea"></textarea>
+                        <label for="product_description" style="color: white;">Product description</label>
+                    </div>
                     <div id="pqw" class="input-field col s4">
                         <input id="product_quantity" style="color: white;" type="text" class="validate">
                         <label for="product_quantity" style="color: white;">Product Quantity</label>
@@ -35,6 +39,9 @@
                 </button>
             </div>
         </div>
+        <small>
+            <strong>NOTE:</strong> double click row to show product details
+        </small>
         <div class="card blue">
             <ul id="tabs-swipe-demo" class="tabs blue darken-3">
                 <li class="tab col s4"><a class="white-text active"  href="#test-swipe-1">Wash</a></li>
@@ -88,7 +95,7 @@
                 </table>
             </div>
         </div>
-        <!-- Modal Structure -->
+        <!-- Modal update -->
         <div id="modal_update" class="modal">
             <div class="modal-content" style="min-height: 400px;">
                 <h4>Product Update</h4>
@@ -110,6 +117,10 @@
                         <input id="m_product_price" type="text" class="validate">
                         <label class="active" for="product_price">Product Price</label>
                     </div>
+                    <div class="input-field col s4">
+                        <textarea id="m_product_description" class="validate materialize-textarea"></textarea>
+                        <label for="m_product_description">Product description</label>
+                    </div>
                     <div id="pqwu" class="input-field col s4">
                         <input id="m_product_quantity" type="text" class="validate">
                         <label class="active" for="product_quantity">Product Quantity</label>
@@ -119,6 +130,32 @@
             <div class="modal-footer">
                 <a id="product_update" href="#!" class="modal-close waves-effect waves-green btn-flat">Update</a>
                 <a id="product_cancel" href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+        </div>
+        {{-- Modal Show --}}
+        <div id="modal_show" class="modal">
+            <div class="modal-content" style="min-height: 400px;">
+                <h4 id="modal_title">Product details</h4>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <strong>Type : </strong><p id="s_product_type">Product Type</p>
+                    </div>
+                    <div class="input-field col s12">
+                        <strong>Name : </strong><p id="s_product_name">Product Name</p>
+                    </div>
+                    <div class="input-field col s12">
+                        <strong>Price : </strong><p id="s_product_price">Product Price</p>
+                    </div>
+                    <div class="input-field col s12">
+                        <strong>Description : </strong><pre id="s_product_description">Product description</pre>
+                    </div>
+                    <div class="input-field col s12">
+                        <strong>Quantity : </strong><p id="s_product_quantity">Product quantity</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="product_cancel" href="#!" class="modal-close waves-effect waves-green btn-flat">exit</a>
             </div>
         </div>
     </div>            

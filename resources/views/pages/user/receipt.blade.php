@@ -46,32 +46,18 @@
             </div>
             {{-- WASH service Row --}}
             <b>WASH</b>
-            <div class="row">
-                <div class="col s6">
-                    <b id="wash-service-name">
-                        ServiceName:
-                    </b>
-                </div>
-                <div class="col s6 text-end">
-                    <span id="wash-service-price">Price</span>
-                </div>
+            <div class="row" id="washes">
+                {{-- populated by js --}}
             </div>
             {{-- Dry Service Row --}}
             <b>DRY</b>
-            <div class="row">
-                <div class="col s6">
-                    <b id="dry-service-name">
-                        ServiceName:
-                    </b>
-                </div>
-                <div class="col s6 text-end">
-                    <span id="dry-service-price">Price</span>
-                </div>
+            <div class="row" id="dries">
+                {{-- populated by js --}}                
             </div>
             {{-- Additional Services --}}
             <b>ADDITIONALS</b>
             <div class="row" id="additionals">
-                
+                {{-- populated by js --}}                
             </div>
             {{-- Show Line --}}
             <hr>

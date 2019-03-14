@@ -1,14 +1,6 @@
 var Services = {
-    wash : {
-        id: 0,
-        name: '',
-        price: 0
-    },
-    dry : {
-        id: 0,
-        name: '',
-        price: 0
-    },
+    wash : [],
+    dry : [],
     additionals: []
 }
 
@@ -24,7 +16,9 @@ var TransactionDetails = {
 }
 
 var ActiveButtons = {
-    additionals: []
+    wash: [],
+    dry: [],
+    additionals: [],
 }
 
 var field = {
@@ -40,26 +34,42 @@ var field = {
     customer_contact : $('#cNumber'),
 }
 
-var InitFields = function (){   
-    $('#wash').val('')
-    $('#wash-price').val('')
-    $('#dry').val('')
-    $('#dry-price').val('')
-    $('#total-cost').val('')
-    $('#coh').val('')
-    $('#change').val('')
-    $('#cname').val('')
-    $('#cAddress').val('')
-    $('#cNumber').val('')
+// reinit fields variable
+var reInitFields = function () {
+    field = {
+        wash : $('#wash'),
+        wash_price : $('#wash-price'),
+        dry : $('#dry'),
+        dry_price : $('#dry-price'),
+        total_cost : $('#total-cost'),
+        cash_on_hand : $('#coh'),
+        change : $('#change'),
+        customer_name : $('#cname'),
+        customer_address : $('#cAddress'),
+        customer_contact : $('#cNumber'),
+    }
 }
-
+// Clear all input fields
+var InitFields = function (){  
+    field.wash.val('')
+    field.wash_price.val('')
+    field.dry.val('')
+    field.dry_price.val('')
+    field.total_cost.val('')
+    field.cash_on_hand.val('')
+    field.change.val('')
+    field.customer_name.val('')
+    field.customer_address.val('')
+    field.customer_contact.val('')
+}
+// clear validation error message or input red border
 var clearValidations = function(){
-    // Wash
+    //wash
         field.wash.removeClass('invalid')
-        field.wash.attr('placeholder', 'WASH')
-    // Dry
+        field.wash.attr('placeholder', 'Wash')
+    //dry 
         field.dry.removeClass('invalid')
-        field.dry.attr('placeholder', 'DRY')
+        field.dry.attr('placeholder', 'Dry')
     // total Cost
         field.total_cost.removeClass('invalid')
     // Cash On Hand
@@ -79,18 +89,20 @@ var clearValidations = function(){
         field.customer_contact.attr('placeholder', 'Contact')
 
 }
-var UpdateFieldAdditional = function (){
-    let a = $('#Additional-lists')
+// add or remove input fields in category field list -> base data on variable Services
+var UpdateFieldEntries = function (list){
+    let a = $(`#${list}-lists`)
     a.empty()
-    if(Services.additionals.length > 0){
-        for (const k in Services.additionals) {
+    let s = Services[list]
+    if(s.length > 0){
+        for (const k in s) {
             a.append(
                 $('<div>').addClass('input-group inline')
                     .append(
-                        $('<input>').val(Services.additionals[k].name).attr('readonly', true)
+                        $('<input>').val(s[k].name).attr('readonly', true)
                     )
                     .append(
-                        $('<input>').val(Services.additionals[k].price).attr('readonly', true)
+                        $('<input>').val(s[k].price).attr('readonly', true)
                     )
             )
         }
@@ -98,34 +110,39 @@ var UpdateFieldAdditional = function (){
         a.append(
             $('<div>').addClass('input-group inline')
                 .append(
-                    $('<input>').attr('placeholder', 'Additional').attr('readonly', true)
+                    $('<input>').attr('placeholder', list).attr('readonly', true).attr('id', list)
                 )
                 .append(
-                    $('<input>').attr('placeholder', 'Price').attr('readonly', true)
+                    $('<input>').attr('placeholder', 'Price').attr('readonly', true).attr('id', `${list}-price`)
                 )
         )
     }
 }
+// compute total cost -> base data on variable Services
 var ComputeTotalCost = function(){
     let total = 0
     // Add wash price
-    total += Services.wash.price
+    for (const k in Services.wash) {
+        total += Services.wash[k].price
+    }
     // Add Dry price 
-    total += Services.dry.price
+    for (const k in Services.dry) {
+        total += Services.dry[k].price
+    }
     // Add Additionals price
-    let a = $('#Additional-lists')
     for (const k in Services.additionals) {
         total += Services.additionals[k].price
     }
     return total
 }
+// update all input fields -> base data on variable Services & TransactionDetails
 var updateFields = function(){
-    field.wash.val(Services.wash.name);
-    field.wash_price.val(Services.wash.price);
-    field.dry.val(Services.dry.name);
-    field.dry_price.val(Services.dry.price);
+    // update wash data
+    UpdateFieldEntries('wash')
+    // update dry data
+    UpdateFieldEntries('dry')
     // update Additional data
-    UpdateFieldAdditional()
+    UpdateFieldEntries('additionals')
     // compute total cost
     TransactionDetails.TotalCost = ComputeTotalCost()
     $('#total-cost').text(TransactionDetails.TotalCost)
@@ -134,29 +151,33 @@ var updateFields = function(){
     $('#change').val(TransactionDetails.change)
 
     clearValidations()
+    reInitFields()
 }
-var AdditonalServiceExist = function(data){
-    for (const key in Services.additionals) {
-        let i = Services.additionals[key].id === data.id
-        let n = Services.additionals[key].name === data.name
-        let p = Services.additionals[key].price === data.price
+
+// this function will check if a service already exist in a specific category
+var ServiceExist = function(data, service){
+    for (const key in Services[service]) {
+        let i = Services[service][key].id === data.id
+        let n = Services[service][key].name === data.name
+        let p = Services[service][key].price === data.price
         if (i && n && p) {
             return true;
         }
     }
     return false;
 }
+
 var AllFieldsHasValue = function (){
 
     let result = {
         errors: {}
     }
 
-    let c1 = Services.wash.name != ''
+    let c1 = Services.wash.length > 0
     if(!c1){
         result.errors.wash = 'No selected wash service'
     }
-    let c2 = Services.dry.name != ''
+    let c2 = Services.dry.length > 0
     if(!c2){
         result.errors.dry = 'No selected dry service'
     }
@@ -196,43 +217,34 @@ var AllFieldsHasValue = function (){
 
     return result
 }
+
 var displayFieldErrors = function(f, e){
     let i = field[f]
     i.addClass('invalid')
     if(i.is('input')){
         i.attr('placeholder', e)
     }
+    console.log(i)
 }
 
 var clearActiveButtons = function(){
-    
-    let w = ActiveButtons.wash
-    let d = ActiveButtons.dry
-    let a = ActiveButtons.additionals.map(function (add){
+    ActiveButtons.wash.map(function (add){
         add.removeClass('red')
         add.addClass('blue-grey')
     })
-    if(w){
-        w.addClass('blue-grey')
-        w.removeClass('red')
-    }
-    if(d){
-        d.removeClass('red')
-        d.addClass('blue-grey')
-    }
+    ActiveButtons.dry.map(function (add){
+        add.removeClass('red')
+        add.addClass('blue-grey')
+    })
+    ActiveButtons.additionals.map(function (add){
+        add.removeClass('red')
+        add.addClass('blue-grey')
+    })
     Services = {
-            wash : {
-                id: 0,
-                name: '',
-                price: 0
-            },
-            dry : {
-                id: 0,
-                name: '',
-                price: 0
-            },
-            additionals: []
-        }
+        wash : [],
+        dry : [],
+        additionals: []
+    }
     TransactionDetails = {
                 TotalCost: 0,
                 customerCash: 0,
@@ -244,9 +256,11 @@ var clearActiveButtons = function(){
                 }
             }
     ActiveButtons = {
-        additionals: []
+        wash: [],
+        dry: [],
+        additionals: [],
     }
-}  
+}
 
 var toggleLoading = function(s){
     if(s == "show"){
@@ -298,57 +312,43 @@ $(document).ready(function () {
     //on click of any WASH button
     $('.btn-wash').click(function(){
         let x = $(this)
-        // check if a wash button is active
-        // if there was no active wash button
-        if(!ActiveButtons.wash){
+        let a = { 
+            id: x.data('id'),
+            name: x.data('name'),
+            price: x.data('price')
+        }
+        if(!ServiceExist(a, 'wash')){
+            Services.wash.push(a)
+            ActiveButtons.wash.push(x)
             x.addClass('red')
             x.removeClass('blue-grey')
-        } else {
-            // if button pressed is not current active
-            if( x.data('id') !== Services.wash.id ) {
-                // remove button color red of old active
-                let o = ActiveButtons.wash
-                o.removeClass('red')
-                o.addClass('blue-grey')
-                // add button color red of current active
-                x.addClass('red')
-                x.removeClass('blue-grey')
-            }
+        }else{
+            Services.wash = Services.wash.filter(d => d.id !== a.id);
+            ActiveButtons.wash = ActiveButtons.wash.filter( d => d[0] !== x[0])
+            x.removeClass('red')
+            x.addClass('blue-grey')
         }
-        // update services
-        Services.wash.id = x.data('id')
-        Services.wash.name = x.data('name')
-        Services.wash.price = x.data('price')
-        // update ActiveButton
-        ActiveButtons.wash = x
         updateFields()
     })
     //on click of any DRY button
     $('.btn-dry').click(function(){
         let x = $(this)
-        // check if a wash button is active
-        // if there was no active wash button
-        if(!ActiveButtons.dry){
+        let a = { 
+            id: x.data('id'),
+            name: x.data('name'),
+            price: x.data('price')
+        }
+        if(!ServiceExist(a, 'dry')){
+            Services.dry.push(a)
+            ActiveButtons.dry.push(x)
             x.addClass('red')
             x.removeClass('blue-grey')
-        } else {
-            // if button pressed is not current active
-            if( x.data('id') !== Services.dry.id ) {
-                // remove button color red of old active
-                let o = ActiveButtons.dry
-                o.removeClass('red')
-                o.addClass('blue-grey')
-                // add button color red of current active
-                x.addClass('red')
-                x.removeClass('blue-grey')
-            }
+        }else{
+            Services.dry = Services.dry.filter(d => d.id !== a.id);
+            ActiveButtons.dry = ActiveButtons.dry.filter( d => d[0] !== x[0])
+            x.removeClass('red')
+            x.addClass('blue-grey')
         }
-        // update services
-        Services.dry.id = x.data('id')
-        Services.dry.name = x.data('name')
-        Services.dry.price = x.data('price')
-        // update ActiveButton
-        ActiveButtons.dry = x
         updateFields()
     })
     //on click of any Additional button
@@ -359,7 +359,7 @@ $(document).ready(function () {
             name: x.data('name'),
             price: x.data('price')
         }
-        if(!AdditonalServiceExist(a)){
+        if(!ServiceExist(a, 'additionals')){
             Services.additionals.push(a)
             ActiveButtons.additionals.push(x)
             x.addClass('red')
@@ -372,26 +372,33 @@ $(document).ready(function () {
         }
         updateFields()
     })
+
+
     //cash on hand input change
     $('#coh').inputFilter(function(value) {
         return /^-?\d*[.,]?\d{0,2}$/.test(value)
     });
-    $('#coh').keyup(function(value) {
+    $('#coh').keyup(function() {
         TransactionDetails.customerCash = Number($(this).val());
         updateFields()
     });
+    // customer name key press
     $('#cname').keyup(function(){
         TransactionDetails.customer.name = $(this).val()
     })
+    // customer address key press
     $('#cAddress').keyup(function(){
         TransactionDetails.customer.address = $(this).val()
     })
+    // customer mobile number input filter
     $('#cNumber').inputFilter(function(value) {
         return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 99999999999)
     });
+    // customer mobile key press
     $('#cNumber').keyup(function(){
         TransactionDetails.customer.contact = $(this).val()
     })
+    // transaction save
     $('#btn-save').click(function(){
         let check = AllFieldsHasValue()
         if(!check.success){
@@ -410,6 +417,7 @@ $(document).ready(function () {
             SubmitTransactionDetailsToserver(d, b)
         }
     })
+    // transaction cancel
     $('#btn-cancel').click(function(){
         InitFields()
         clearActiveButtons()

@@ -15,6 +15,7 @@ class productController extends Controller
         $p->price = $r->price;
         $p->type_of_product = $r->type;
         $p->quantity = $r->quantity;
+        $p->description = $r->description;
         $p->last_update_user = $r->user()->id;
         $p->save();
         return response()->json($p);
@@ -33,6 +34,7 @@ class productController extends Controller
         $p->price = $r->price;
         $p->type_of_product = $r->type;
         $p->quantity = $r->quantity;
+        $p->description = $r->description;
         $p->last_update_user = $r->user()->id;
         $p->save();
         return response()->json($p);

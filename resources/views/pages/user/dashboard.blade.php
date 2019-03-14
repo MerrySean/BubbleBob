@@ -117,6 +117,7 @@
         
         {{-- BOTTOM ROW --}}
         <div id="bottom-row" class="row w-100 d-block">
+            {{-- transaction --}}
             <div class="col s8">
                 <div class="card blue">
                     <div class="card-content">
@@ -126,17 +127,21 @@
                             <div class="col s6">
                                 {{-- Wash --}}
                                 <h4>Wash</h4>
-                                <div class="input-group">
-                                    <input id="wash" type="text" placeholder="WASH" readonly>
-                                    <input id="wash-price" type="text" placeholder="Price" readonly>
+                                <div id="wash-lists">
+                                    <div class="input-group inline">
+                                        <input type="text" id="wash" placeholder="WASH" readonly>
+                                        <input type="text" id="wash-price" placeholder="Price" readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col s6">
                                 {{-- Dry --}}
                                 <h4>Dry</h4>
-                                <div class="input-group">
-                                    <input id="dry" type="text" placeholder="DRY" readonly >
-                                    <input id="dry-price" type="text" placeholder="Price" readonly>
+                                <div id="dry-lists">
+                                    <div class="input-group inline">
+                                        <input type="text" id="dry" placeholder="DRY" readonly>
+                                        <input type="text" id="dry-price" placeholder="Price" readonly>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +150,7 @@
                             <div id="" class="col s6">
                                 {{-- Additional --}}
                                 <h4>Additionals</h4>
-                                <div id="Additional-lists">
+                                <div id="additionals-lists">
                                     <div class="input-group inline">
                                         <input type="text" placeholder="Additional" readonly>
                                         <input type="text" placeholder="Price" readonly>
@@ -176,6 +181,7 @@
                     </div>
                 </div>
             </div>
+            {{-- customer info --}}
             <div class="col s4">
                 <div class="card blue">
                     <div class="card-content">
@@ -455,14 +461,8 @@
     <script>
         function generateReciept(res){
             let els = {
-                wash: {
-                    name: $('#wash-service-name')[0],
-                    price: $('#wash-service-price')[0]
-                },
-                dry: {
-                    name: $('#dry-service-name')[0],
-                    price: $('#dry-service-price')[0]
-                },
+                wash: $('#washes')[0],
+                dry: $('#dries')[0],
                 additionals: $('#additionals')[0],
                 customer: {
                     name: $('#customer-name')[0],
@@ -478,29 +478,26 @@
                 }
             }
             //update fields
-            els.wash.name.textContent = Services.wash.name
-            els.wash.price.textContent = Services.wash.price
-            els.dry.name.textContent = Services.dry.name
-            els.dry.price.textContent = Services.dry.price
-            additionalPrintables()
+            additionalPrintables('wash')
+            additionalPrintables('dry')
+            additionalPrintables('additionals')
             els.customer.name.textContent = TransactionDetails.customer.name
             els.staff.name.textContent = res.data.staff.firstname + " " + res.data.staff.lastname
-            // els.details.or.textContent = TransactionDetails.TotalCost
             els.details.total.textContent = TransactionDetails.TotalCost
             els.details.cash.textContent = TransactionDetails.customerCash
             els.details.change.textContent = TransactionDetails.change
         }
 
         // generate additional services printables
-        function additionalPrintables(){
-            for (const key in Services.additionals) {
+        function additionalPrintables(service){
+            for (const key in Services[service]) {
                 $('#additionals').append(
                     $('<div>').addClass('col').addClass('s6').append(
-                        $('<b>').addClass('additional-service-name').text(Services.additionals[key].name)
+                        $('<b>').addClass(`${service}-service-name`).text(Services[service][key].name)
                     )
                 ).append(
                     $('<div>').addClass('col').addClass('s6').addClass('text-end').append(
-                        $('<span>').addClass('additional-service-price').text(Services.additionals[key].price)
+                        $('<span>').addClass(`${service}-service-price`).text(Services[service][key].price)
                     )
                 )
             }

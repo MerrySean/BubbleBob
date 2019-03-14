@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,7 +13,6 @@
 |
  */
 
-Auth::routes();
 
 
 Route::middleware('guest')->group(function () {
@@ -56,8 +57,14 @@ Route::group(
 
         //Pocket Money Transaction
         Route::post('/PettyCash', 'SalesController@PettyCash')->name('admin.PettyCash');
+
+        //Register user
+        Route::get('/register', 'Auth\RegisterController@showRegistrationForm');
     }
 );
+
+
+Auth::routes();
 
 Route::group(
     [

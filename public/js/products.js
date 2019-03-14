@@ -1,32 +1,53 @@
+// Products
 var product = {
     type: '',
     name: '',
     price: '',
-    quantity: ''
+    quantity: '',
+    description: '',
 }
 
+// to update products
 var ToUpdateProduct = {
     id: '',
     type: '',
     name: '',
     price: '',
-    quantity: ''
+    quantity: '',
+    description: '',
 }
 
+// fields
 var fields = {
+    insert : {
+        type: $('#product_type'),
+        name: $('#product_name'),
+        price: $('#product_price'),
+        quantity: $('#product_quantity'),
+        description: $('#product_description')
+    },
     update: {
         type: $('#m_product_type'),
         name: $('#m_product_name'),
         price: $('#m_product_price'),
-        quantity: $('#m_product_quantity')
+        quantity: $('#m_product_quantity'),
+        description: $('#m_product_description')
+    },
+    show: {
+        type: $('#s_product_type'),
+        name: $('#s_product_name'),
+        price: $('#s_product_price'),
+        quantity: $('#s_product_quantity'),
+        description: $('#s_product_description')
     }
 }
 
 var initProduct = function(){
-    product.type    = $('#product_type').val()
-    product.name    = $('#product_name').val()
-    product.price   = $('#product_price').val()
-    product.quantity = $('#product_quantity').val()
+    product.type    =  fields.insert.type.val()
+    product.name    =  fields.insert.name.val()
+    product.price   =  fields.insert.price.val()
+    product.quantity =  fields.insert.quantity.val()
+    product.description =  fields.insert.description.val()
 }
 
 var handleQuantityWrapper = function(){
@@ -53,6 +74,7 @@ var UpdateModalOpen = function (type , id){
     ToUpdateProduct.type = type
     ToUpdateProduct.name = $(s[0]).data('name')
     ToUpdateProduct.price = $(s[0]).data('price')
+    ToUpdateProduct.description = $(s[0]).data('description')
     if(type == "Additional") {
         ToUpdateProduct.quantity = $(s[0]).data('quantity')
     }
@@ -89,7 +111,9 @@ var TableAddRow = function (data, id){
                 .addClass('cell-action')
             )
             .attr("data-name" , data.name)
+            .attr("data-type" , data.type_of_product)
             .attr("data-price" , data.price)
+            .attr("data-description" , data.description)
         );
     } else {
         $("#"+id).find('tbody')
@@ -121,17 +145,21 @@ var TableAddRow = function (data, id){
                 .attr("data-name" , data.name)
                 .attr("data-price" , data.price)
                 .attr("data-quantity" , data.quantity)
+                .attr("data-description" , data.description)
             );
     }
 }
 
 var TableUpdateRow = function (p){
-    console.log(p)
     const s = $("#"+p.type_of_product).find('tbody').find('#'+p.id)
     s.find('.cell-name').text(p.name)
     s.find('.cell-price').text(p.price)
+    s.data('name') = p.name
+    s.data('price') = p.price
+    s.data('description') = p.description
     if(p.type_of_product == 'Additional'){
         s.find('.cell-quantity').text(p.quantity)
+        s.data('quantity') = p.quantity
     }
 }
 
@@ -162,6 +190,7 @@ var initUpdateFields = function() {
     fields.update.name.val(ToUpdateProduct.name)
     fields.update.price.val(ToUpdateProduct.price)
     fields.update.quantity.val(ToUpdateProduct.quantity)
+    fields.update.description.val(ToUpdateProduct.description)
 
     fields.update.type.change(function(){
         ToUpdateProduct.type = $(this).val()
@@ -178,6 +207,7 @@ var initUpdateFields = function() {
     })
     fields.update.type.formSelect()
     M.updateTextFields();
+    M.textareaAutoResize(fields.update.description);
     handleQuantityWrapperUpdate()
 }
 
@@ -195,10 +225,12 @@ var DeleteProduct = function(th){
 
 $(document).ready(function(){
     $('.modal').modal({
-        onOpenEnd: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+        onOpenStart: function(modal, trigger){
             let t = $(trigger).data('type')
             let id= $(trigger).data('id')
             UpdateModalOpen(t , id)
+        },
+        onOpenEnd: function() { // Callback for Modal open. Modal and trigger parameters available.
             initUpdateFields()
         },
     });
@@ -230,13 +262,13 @@ $(document).ready(function(){
     $("#product_quantity").inputFilter(function(value) {
         return /^\d*$/.test(value)
     });
-
     // Save Product
     $("#product_save").click(function(){
-        product.type = $('#product_type').val();
-        product.name = $('#product_name').val();
-        product.price = $('#product_price').val();
-        product.quantity = $('#product_quantity').val();
+        product.type = fields.insert.type.val();
+        product.name = fields.insert.name.val();
+        product.price = fields.insert.price.val();
+        product.quantity = fields.insert.quantity.val();
+        product.description = fields.insert.description.val();
 
         axios.post('/admin/product',product).then(function(res){
             TableAddRow(res.data, res.data.type_of_product)
@@ -246,14 +278,17 @@ $(document).ready(function(){
             type: '',
             name: '',
             price: '',
-            quantity: ''
+            quantity: '',
+            description: ''
         }
     })
+    // Update product
     $('#product_update').click(function(){
         ToUpdateProduct.type     = fields.update.type.val();
         ToUpdateProduct.name     = fields.update.name.val();
         ToUpdateProduct.price    = fields.update.price.val();
         ToUpdateProduct.quantity = fields.update.quantity.val();
+        ToUpdateProduct.description = fields.update.description.val();
 
         axios.post('/admin/update/product',ToUpdateProduct).then(function(res){
             TableUpdateRow(res.data)
@@ -264,14 +299,31 @@ $(document).ready(function(){
             type: '',
             name: '',
             price: '',
-            quantity: ''
+            quantity: '',
+            description: ''
         }
     })
+    // Delete product
     $('.product-delete').click(function(){
         DeleteProduct($(this))
     })
+    // Cancel update Products
     $("#product_cancel").click(function(){
         let v = M.modal.getInstance($("#modal_update"))
         v.close();
+    })
+    // on table row click
+    $(document).on('dblclick','table tbody tr',function(){
+        let m = M.Modal.getInstance($('#modal_show'));
+        fields.show.type.text($(this).data('type')) 
+        fields.show.name.text($(this).data('name')) 
+        fields.show.price.text($(this).data('price'))
+        fields.show.description.text($(this).data('description'))
+        if($(this).data('type') == 'Additional'){
+            fields.show.quantity.text($(this).data('quantity'))
+        }else{
+            fields.show.quantity.text('not available')
+        }
+        m.open();
     })
 })

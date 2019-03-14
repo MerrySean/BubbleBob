@@ -1,14 +1,14 @@
 @extends('master')
 
 @section('auth.navbar')
-    <div class="right" style="margin-right:3rem;">
+    <div class="right" style="margin-right:3rem; positition:relative;">
         <a class="dropdown-trigger btn" href="#" data-target='profileDropdown' style="">Profile</a>
         <ul id="profileDropdown" class="dropdown-content" style="">
             <li>
                 <a href="/Account">Profile</a>
             </li>
             <li>
-                <a href="/Account/Settings">Account Settings</a>
+                <a href="/admin/register">Register New user</a>
             </li>
             <li>
                 <a href="/logout">logout</a>
@@ -40,6 +40,11 @@
 @push('styles')
     <!-- Styles -->
     <style>
-        
+        /* #profileDropdown {
+            display: block;
+            width: auto;
+            left: 88%;
+            top: 82%;
+        } */
     </style>
 @endpush

@@ -1,4 +1,4 @@
-<div class="sidenav sidenav-fixed blue darken-4" style="height:100%;width: 280px;"> 
+<div class="sidenav sidenav-fixed blue darken-4" style="height:100%;width: 200px;"> 
     <div class="collection">
         <a href="{{ route('admin.dashboard') }}" class="collection-item {{ is_route('admin.dashboard','active') }}">Dashboard</a>
         <a href="{{ route('admin.users') }}" class="collection-item {{ is_route('admin.users','active') }}">Users</a>

@@ -59,6 +59,8 @@ class PagesController extends Controller
     // logged-in user's Profiles page
     public function profile()
     {
+       
+        # Get user Data
         return view('pages.profile');
     }
 }

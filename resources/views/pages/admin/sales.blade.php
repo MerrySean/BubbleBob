@@ -68,25 +68,18 @@
             <div id="products">
                 <ul>
                     <li> 
+                        <p class="product-title">Special</p>
+                        <ol id="special">
+                        </ol>
+                    </li>
+                    <li> 
                         <p class="product-title">WASH</p>
-                        <ol>
-                            <li>
-                                <div class="d-flex justify-content-between w-25">
-                                    <span id="wash-product-name"></span>
-                                    <span>&#8369; <span id="wash-product-price"></span></span>
-                                </div>
-                            </li>
+                        <ol id="wash">
                         </ol>
                     </li>
                     <li>
                         <p class="product-title">DRY</p>
-                        <ol>
-                            <li>
-                                <div class="d-flex justify-content-between w-25">
-                                    <span id="dry-product-name"></span>
-                                    <span>&#8369; <span id="dry-product-price"></span></span>
-                                </div>
-                            </li>
+                        <ol id="dry">
                         </ol>
                     </li>
                     <li>
@@ -156,7 +149,7 @@
             font-weight: bold;
             border-bottom: 1px solid black;
         }  
-        .modal #additionals li div {
+        .modal li div {
             display: flex;
             justify-content: space-between;
             width: 25%; 
@@ -180,15 +173,10 @@
             total: $('#total-price'),
             cash: $('#customer-cash'),
             change: $('#customer-change'),
-            wash: {
-                title: $('#wash-product-name'),
-                price: $('#wash-product-price')
-            },
-            dry: {
-                title: $('#dry-product-name'),
-                price: $('#dry-product-price')
-            },
+            wash: $('#wash'),
+            dry: $('#dry'),
             additionals : $('#additionals'),
+            special : $('#special'),
         }
 
         // sort table
@@ -250,12 +238,51 @@
             console.log(d);
             let date = moment(d.Details.transaction_date.date).format('MMMM Do YYYY');
             modalItems.title.text(`${d.Customer.Name} - ${date}`)
+            // special
+            modalItems.special.html('')
+            d.transactions.Special.forEach(element => {
+                modalItems.special.append(
+                    $('<li>').append(
+                        $('<div>').append(
+                            $('<span>').text(element.name)
+                        ).append(
+                            $('<span>').html('&#8369; ').append(
+                                $('<span>').text(element.price)
+                            )
+                        )
+                    )
+                )
+            });
             // Wash
-            modalItems.wash.title.text(d.transactions.Wash.name)
-            modalItems.wash.price.text(d.transactions.Wash.price)
+            modalItems.wash.html('')
+            d.transactions.Wash.forEach(element => {
+                modalItems.wash.append(
+                    $('<li>').append(
+                        $('<div>').append(
+                            $('<span>').text(element.name)
+                        ).append(
+                            $('<span>').html('&#8369; ').append(
+                                $('<span>').text(element.price)
+                            )
+                        )
+                    )
+                )
+            });
             // Dry
-            modalItems.dry.title.text(d.transactions.Dry.name)
-            modalItems.dry.price.text(d.transactions.Dry.price)
+            modalItems.dry.html('')
+            d.transactions.Dry.forEach(element => {
+                modalItems.dry.append(
+                    $('<li>').append(
+                        $('<div>').append(
+                            $('<span>').text(element.name)
+                        ).append(
+                            $('<span>').html('&#8369; ').append(
+                                $('<span>').text(element.price)
+                            )
+                        )
+                    )
+                )
+            });
             // Additionals
             modalItems.additionals.html('')
             d.transactions.Additional.forEach(element => {

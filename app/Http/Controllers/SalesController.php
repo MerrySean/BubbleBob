@@ -12,6 +12,7 @@ class SalesController extends Controller
     // Add new transaction
     public function transaction(Request $r)
     {
+        // dd($r);
         $ci = new \App\Models\Customer;
         // customer should have unique Name, Contact Number & Address
         // if customer has not yet been created via Name, Contact Number & Address
@@ -27,18 +28,22 @@ class SalesController extends Controller
         // Add to transation_details table every services inside services array
         $tdi = new \App\Models\Transaction_Details;
             // Add Wash services
-            $tdi->create(
-                [
-                    'transaction_id'=> $ti->id,
-                    'product_id'    => $r->services['wash']['id']
-                ]
-            );
-            $tdi->create(
-                [
-                    'transaction_id'=> $ti->id,
-                    'product_id'    => $r->services['dry']['id']
-                ]
-            );
+            foreach ($r->services['wash'] as $key => $value) {
+                $tdi->create(
+                    [
+                        'transaction_id'=> $ti->id,
+                        'product_id'    => $value['id']
+                    ]
+                );
+            }
+            foreach ($r->services['dry'] as $key => $value) {
+                $tdi->create(
+                    [
+                        'transaction_id'=> $ti->id,
+                        'product_id'    => $value['id']
+                    ]
+                );
+            }
             // add all additionals
             foreach ($r->services['additionals'] as $key => $value) {
                 $tdi->create(
